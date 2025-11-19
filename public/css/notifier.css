@@ -1,0 +1,294 @@
+/* --- Importar fuente moderna --- */
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;800&display=swap');
+
+:root {
+    --color-primario: #007bff;
+    --color-llamado: #a92fb9; 
+    /* Fondo oscuro elegante */
+    --bg-gradient: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+    --glass-bg: rgba(255, 255, 255, 0.1);
+    --glass-border: rgba(255, 255, 255, 0.2);
+    --glass-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+    --text-color: #ffffff;
+}
+
+* { box-sizing: border-box; }
+
+body {
+    margin: 0;
+    padding: 20px;
+    font-family: 'Montserrat', sans-serif;
+    background: var(--bg-gradient);
+    height: 100vh;
+    overflow: hidden;
+    color: var(--text-color);
+    /* Animación sutil del fondo */
+    background-size: 400% 400%;
+    animation: gradientBG 15s ease infinite;
+}
+
+@keyframes gradientBG {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+/* --- Layout Principal --- */
+#main-layout {
+    display: flex;
+    gap: 25px;
+    height: 100%;
+    max-width: 1800px;
+    margin: 0 auto;
+}
+
+/* --- Zona del Video (Izquierda) --- */
+#video-section {
+    flex: 7;
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: var(--glass-shadow);
+    background: black;
+    position: relative;
+    border: 1px solid var(--glass-border);
+}
+
+#promo-video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* O 'contain' si no quieres cortar nada */
+}
+
+/* --- Zona Lateral (Derecha) --- */
+#sidebar {
+    flex: 3;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+/* --- Widget de Reloj (Nuevo) --- */
+#clock-widget {
+    background: var(--glass-bg);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid var(--glass-border);
+    border-radius: 20px;
+    padding: 15px;
+    text-align: center;
+    box-shadow: var(--glass-shadow);
+}
+
+#clock-time {
+    font-size: 3rem;
+    font-weight: 800;
+    letter-spacing: 2px;
+    line-height: 1;
+}
+
+#clock-date {
+    font-size: 1rem;
+    text-transform: uppercase;
+    opacity: 0.8;
+    margin-top: 5px;
+}
+
+/* --- Lista de Espera (Estilo Glass) --- */
+#patient-list {
+    flex: 1;
+    background: var(--glass-bg);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-radius: 20px;
+    padding: 20px;
+    border: 1px solid var(--glass-border);
+    box-shadow: var(--glass-shadow);
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+}
+
+#patient-list h2 {
+    text-align: center;
+    margin-top: 0;
+    font-size: 1.5rem;
+    text-transform: uppercase;
+    border-bottom: 2px solid rgba(255,255,255,0.1);
+    padding-bottom: 15px;
+    margin-bottom: 15px;
+}
+
+#patients {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+#patients li {
+    background: rgba(255, 255, 255, 0.15);
+    padding: 15px;
+    border-radius: 12px;
+    margin-bottom: 10px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    /* Animación de entrada */
+    animation: slideInRight 0.5s ease-out;
+}
+
+/* Iconito antes del nombre */
+#patients li::before {
+    content: '👤';
+    margin-right: 10px;
+    font-size: 1.2rem;
+}
+
+/* --- Notificaciones (Llamados) --- */
+#notifications {
+    /* Reservamos espacio pero dejamos que crezca si es necesario */
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.notification {
+    background: linear-gradient(135deg, #a92fb9 0%, #d4145a 100%);
+    color: white;
+    padding: 25px;
+    border-radius: 15px;
+    text-align: center;
+    box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+    border: 1px solid rgba(255,255,255,0.3);
+    
+    /* Animación de explosión suave */
+    animation: popIn 0.6s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+}
+
+.notification .name {
+    font-size: 2rem;
+    font-weight: 800;
+    display: block;
+    margin-bottom: 5px;
+}
+
+.notification .details {
+    font-size: 1.2rem;
+    font-weight: 400;
+    opacity: 0.9;
+}
+
+/* --- Animaciones --- */
+@keyframes slideInRight {
+    from { opacity: 0; transform: translateX(20px); }
+    to { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes popIn {
+    from { opacity: 0; transform: scale(0.5) translateY(-50px); }
+    to { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+/* --- Botón Flotante --- */
+#enable-sound {
+    position: fixed;
+    bottom: 20px;
+    left: 20px;
+    z-index: 100;
+    padding: 12px 25px;
+    background: white;
+    color: #333;
+    border: none;
+    border-radius: 30px;
+    font-weight: bold;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    transition: transform 0.2s;
+}
+#enable-sound:hover { transform: scale(1.05); }
+/* =========================================
+   ESTILOS DEL ESTADO VACÍO (NEÓN / ACTIVO)
+   ========================================= */
+
+.empty-state-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    text-align: center;
+    padding: 40px;
+}
+
+/* Círculo indicador */
+.status-indicator {
+    position: relative;
+    width: 100px; /* Un poco más grande */
+    height: 100px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 25px;
+}
+
+/* El punto central (Ahora brilla) */
+.status-dot {
+    width: 20px;
+    height: 20px;
+    background-color: #00ff88; /* Verde Neón Brillante */
+    border-radius: 50%;
+    z-index: 2;
+    /* Efecto de resplandor */
+    box-shadow: 0 0 20px rgba(0, 255, 136, 0.8); 
+}
+
+/* El anillo que pulsa */
+.pulse-ring {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    border: 3px solid #00ff88; /* Borde Verde */
+    border-radius: 50%;
+    opacity: 0;
+    box-shadow: 0 0 15px rgba(0, 255, 136, 0.4); /* Resplandor en el anillo */
+    animation: pulse-animation 2s infinite ease-out;
+}
+
+/* Texto (Más blanco y legible) */
+.status-text h3 {
+    margin: 0;
+    font-size: 1.4rem;
+    color: #ffffff; /* Blanco puro */
+    font-weight: 800;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    text-shadow: 0 0 10px rgba(0, 255, 136, 0.4); /* Sombra verde sutil */
+}
+
+.status-text p {
+    margin: 8px 0 0 0;
+    font-size: 1rem;
+    color: rgba(255, 255, 255, 0.8); /* Blanco semitransparente */
+    font-weight: 500;
+}
+
+/* --- Animación del Radar --- */
+@keyframes pulse-animation {
+    0% {
+        transform: scale(0.1);
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.6;
+    }
+    100% {
+        transform: scale(1.8); /* Se expande más */
+        opacity: 0;
+    }
+}
+
+/* Icono del paciente en la lista */
+.patient-icon {
+    color: var(--color-primario);
+    margin-right: 10px;
+    font-size: 1.1em;
+}

@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registro de Pacientes</title>
+    
+    <link rel="stylesheet" href="/css/register.css">
+</head>
+<body>
+    <div id="container">
+        <h1>Registrar Paciente</h1>
+        
+        <form action="/register" method="POST" onsubmit="return mostrarMensajeExito()">
+
+            <div>
+                <label for="dni">DNI:</label>
+                <input type="text" id="dni" name="dni" required onblur="buscarPaciente()">
+            </div>
+
+            <div>
+                <label for="nombre">Nombre:</label>
+                <input type="text" id="nombre" name="nombre" required>
+            </div>
+
+            <div>
+                <label for="apellido">Apellido:</label>
+                <input type="text" id="apellido" name="apellido" required>
+            </div>
+
+            <div>
+                <label for="horario">Fecha y Hora:</label>
+                <input type="datetime-local" id="horario" name="horario" required>
+            </div>
+
+            <div>
+                <label for="especialidad">Especialidad:</label>
+                <select id="especialidad" name="especialidad" required>
+                    <option value="Cardiologia">Cardiología</option>
+                    <option value="ClinicaMedica">Clínica Médica</option>
+                    <option value="Dermatologia">Dermatología</option>
+                    <option value="Traumatologia">Traumatología</option>
+                    </select>
+            </div>
+            
+            <div>
+                <label for="nro_consultorio">Número de Consultorio:</label>
+                <select id="nro_consultorio" name="nro_consultorio" required>
+                    <option value="004">004</option>
+                    <option value="005">005</option>
+                    <option value="101">101</option>
+                    <option value="102">102</option>
+                    <option value="103">103</option>
+                    <option value="104">104</option>
+                    <option value="105">105</option>
+                </select>
+            </div>
+
+            <div>
+                <button type="submit">Registrar</button>
+            </div>
+        </form>
+    </div>
+    
+    <script src="/js/register.js"></script>
+</body>
+</html>

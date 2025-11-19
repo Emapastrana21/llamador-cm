@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel de Pacientes</title>
+    
+    <link rel="stylesheet" href="/css/index.css">
+    
+    <script src="/socket.io/socket.io.js"></script>
+</head>
+<body>
+    <h1>Panel Médico</h1>
+
+    <div class="tabs-container">
+        <button id="tab-espera" class="tab-btn active">En Espera</button>
+        <button id="tab-historial" class="tab-btn">Historial (Atendidos)</button>
+    </div>
+
+    <div id="vista-espera">
+        <div class="control-container">
+            <select id="consultorio-select">
+                <option value="">Todos los Consultorios</option>
+                <option value="004">Consultorio 004</option>
+                <option value="005">Consultorio 005</option>
+                <option value="101">Consultorio 101</option>
+                <option value="102">Consultorio 102</option>
+                <option value="103">Consultorio 103</option>
+                <option value="104">Consultorio 104</option>
+                <option value="105">Consultorio 105</option>
+            </select>
+            <button id="consultar-btn">Refrescar</button>
+        </div>
+        <ul id="pacientes-lista"></ul>
+    </div>
+
+    <div id="vista-historial" style="display: none;">
+        <div class="table-container">
+            <table id="historial-table">
+                <thead>
+                    <tr>
+                        <th>Hora</th>
+                        <th>Paciente</th>
+                        <th>DNI</th>
+                        <th>Especialidad</th>
+                        <th>Estado</th>
+                    </tr>
+                </thead>
+                <tbody id="historial-body">
+                    </tbody>
+            </table>
+        </div>
+    </div>
+    
+    <div id="notification"></div>
+
+    <script src="/js/index.js"></script>
+</body>
+</html>
