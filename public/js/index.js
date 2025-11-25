@@ -1,3 +1,7 @@
+// GUARDIA DE SEGURIDAD
+if (!localStorage.getItem('usuario_autorizado')) {
+    window.location.href = '/login.html';
+}
 document.addEventListener('DOMContentLoaded', () => {
     // Conectamos este panel al servidor de Sockets
     const socket = io();
@@ -79,19 +83,29 @@ document.addEventListener('DOMContentLoaded', () => {
                     item.setAttribute('data-id', paciente.id);
                     
                     const horario = new Date(paciente.horario).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-
-                    // HTML interno para cada item de la lista
+// ... dentro del forEach ...
+                    
+                    // HTML interno MEJORADO para cada item
                     item.innerHTML = `
-                        <div class="info">
-                            ${paciente.nombre} ${paciente.apellido} - ${horario}
+                        <div class="card-content">
+                            <div class="card-header">
+                                <span class="patient-name">${paciente.nombre} ${paciente.apellido}</span>
+                                <span class="patient-time">${horario}</span>
+                            </div>
+                            <div class="card-details">
+                                <span class="detail-badge">📝 ${paciente.especialidad}</span>
+                                <span class="detail-text">DNI: ${paciente.dni}</span>
+                            </div>
                         </div>
+                        
                         <div class="btn-container">
-                            <button onclick="llamarPaciente(${paciente.id})" class="btn-llamar">Llamar</button>
-                            <button onclick="marcarAtendido(${paciente.id}, 'ATENDIDO')" class="btn-atendido">Atendido</button>
-                            <button onclick="marcarAtendido(${paciente.id}, 'NO ATENDIDO')" class="btn-no-atendido">No Atendido</button>
+                            <button onclick="llamarPaciente(${paciente.id})" class="btn btn-llamar">📢 Llamar</button>
+                            <button onclick="marcarAtendido(${paciente.id}, 'ATENDIDO')" class="btn btn-atendido">✅ Atendido</button>
+                            <button onclick="marcarAtendido(${paciente.id}, 'NO ATENDIDO')" class="btn btn-no-atendido">❌ Ausente</button>
                         </div>
                     `;
                     listaPacientesUI.appendChild(item);
+                    // ...
                 });
             });
     };

@@ -1,294 +1,141 @@
-/* --- Importar fuente moderna --- */
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;800&display=swap');
 
 :root {
-    --color-primario: #007bff;
-    --color-llamado: #a92fb9; 
-    /* Fondo oscuro elegante */
-    --bg-gradient: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
-    --glass-bg: rgba(255, 255, 255, 0.1);
-    --glass-border: rgba(255, 255, 255, 0.2);
-    --glass-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
-    --text-color: #ffffff;
+    --bg-dark: #0f172a;
+    --color-llamando: #e11d48;
+    --color-espera: #0284c7;
+    --text-white: #ffffff;
 }
 
 * { box-sizing: border-box; }
 
 body {
     margin: 0;
-    padding: 20px;
+    padding: 15px; /* Margen un poco más chico para ganar espacio */
     font-family: 'Montserrat', sans-serif;
-    background: var(--bg-gradient);
+    background-color: var(--bg-dark);
+    color: var(--text-white);
     height: 100vh;
     overflow: hidden;
-    color: var(--text-color);
-    /* Animación sutil del fondo */
-    background-size: 400% 400%;
-    animation: gradientBG 15s ease infinite;
+    background-image: radial-gradient(circle at center, #1e293b 0%, #0f172a 100%);
 }
 
-@keyframes gradientBG {
-    0% { background-position: 0% 50%; }
-    50% { background-position: 100% 50%; }
-    100% { background-position: 0% 50%; }
-}
-
-/* --- Layout Principal --- */
-#main-layout {
-    display: flex;
-    gap: 25px;
-    height: 100%;
-    max-width: 1800px;
-    margin: 0 auto;
-}
-
-/* --- Zona del Video (Izquierda) --- */
-#video-section {
-    flex: 7;
-    border-radius: 20px;
-    overflow: hidden;
-    box-shadow: var(--glass-shadow);
-    background: black;
-    position: relative;
-    border: 1px solid var(--glass-border);
-}
-
-#promo-video {
+/* --- GRILLA DE 2 COLUMNAS --- */
+#main-grid {
+    display: grid;
+    height: calc(100vh - 30px);
     width: 100%;
-    height: 100%;
-    object-fit: cover; /* O 'contain' si no quieres cortar nada */
+    /* 50% Llamados - 50% Espera */
+    grid-template-columns: 1fr 1fr; 
+    /* Filas: Header(8%) - Contenido(87%) - Noticias(5%) */
+    /* Achicamos el header al 8% para ganar espacio abajo */
+    grid-template-rows: 8vh auto 5vh; 
+    gap: 15px;
 }
 
-/* --- Zona Lateral (Derecha) --- */
-#sidebar {
-    flex: 3;
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-}
-
-/* --- Widget de Reloj (Nuevo) --- */
-#clock-widget {
-    background: var(--glass-bg);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-    border: 1px solid var(--glass-border);
-    border-radius: 20px;
-    padding: 15px;
-    text-align: center;
-    box-shadow: var(--glass-shadow);
-}
-
-#clock-time {
-    font-size: 3rem;
-    font-weight: 800;
-    letter-spacing: 2px;
-    line-height: 1;
-}
-
-#clock-date {
-    font-size: 1rem;
-    text-transform: uppercase;
-    opacity: 0.8;
-    margin-top: 5px;
-}
-
-/* --- Lista de Espera (Estilo Glass) --- */
-#patient-list {
-    flex: 1;
-    background: var(--glass-bg);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-    border-radius: 20px;
-    padding: 20px;
-    border: 1px solid var(--glass-border);
-    box-shadow: var(--glass-shadow);
-    overflow-y: auto;
-    display: flex;
-    flex-direction: column;
-}
-
-#patient-list h2 {
-    text-align: center;
-    margin-top: 0;
-    font-size: 1.5rem;
-    text-transform: uppercase;
-    border-bottom: 2px solid rgba(255,255,255,0.1);
-    padding-bottom: 15px;
-    margin-bottom: 15px;
-}
-
-#patients {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-}
-
-#patients li {
-    background: rgba(255, 255, 255, 0.15);
-    padding: 15px;
+/* --- PANELES COMUNES --- */
+.glass-panel {
+    background: #1e293b;
     border-radius: 12px;
-    margin-bottom: 10px;
-    font-size: 1.1rem;
-    font-weight: 600;
+    overflow: hidden;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+    border: 1px solid rgba(255,255,255,0.05);
+    display: flex;
+    flex-direction: column;
+}
+
+/* --- CABECERA (Más compacta) --- */
+#header-clock {
+    grid-column: 1 / -1;
     display: flex;
     align-items: center;
-    /* Animación de entrada */
-    animation: slideInRight 0.5s ease-out;
+    justify-content: center;
+    padding: 0;
+    background: rgba(30, 41, 59, 0.5);
+    border-radius: 10px;
+    border: 1px solid rgba(255,255,255,0.05);
 }
 
-/* Iconito antes del nombre */
-#patients li::before {
-    content: '👤';
-    margin-right: 10px;
-    font-size: 1.2rem;
-}
+#clock-widget { display: flex; align-items: baseline; gap: 15px; }
+#clock-time { font-size: 2.5rem; font-weight: 800; line-height: 1; color: #fff; } /* Letra más chica */
+#clock-date { font-size: 1rem; font-weight: 600; color: #94a3b8; text-transform: uppercase; }
 
-/* --- Notificaciones (Llamados) --- */
-#notifications {
-    /* Reservamos espacio pero dejamos que crezca si es necesario */
+/* --- COLUMNA LLAMADOS (Izquierda) --- */
+#col-calling {
+    background: rgba(30, 41, 59, 0.6);
+}
+.header-calling { background: var(--color-llamando); padding: 8px; text-align: center; }
+.header-calling h3 { margin: 0; font-size: 1.2rem; color: white; letter-spacing: 1px; }
+
+#notifications-list {
+    flex: 1;
+    padding: 10px;
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 8px; /* Menos espacio entre tarjetas */
+    overflow-y: auto;
 }
+#notifications-list::-webkit-scrollbar { display: none; }
 
-.notification {
-    background: linear-gradient(135deg, #a92fb9 0%, #d4145a 100%);
-    color: white;
-    padding: 25px;
-    border-radius: 15px;
-    text-align: center;
-    box-shadow: 0 10px 20px rgba(0,0,0,0.2);
-    border: 1px solid rgba(255,255,255,0.3);
-    
-    /* Animación de explosión suave */
-    animation: popIn 0.6s cubic-bezier(0.68, -0.55, 0.27, 1.55);
-}
-
-.notification .name {
-    font-size: 2rem;
-    font-weight: 800;
-    display: block;
-    margin-bottom: 5px;
-}
-
-.notification .details {
-    font-size: 1.2rem;
-    font-weight: 400;
-    opacity: 0.9;
-}
-
-/* --- Animaciones --- */
-@keyframes slideInRight {
-    from { opacity: 0; transform: translateX(20px); }
-    to { opacity: 1; transform: translateX(0); }
-}
-
-@keyframes popIn {
-    from { opacity: 0; transform: scale(0.5) translateY(-50px); }
-    to { opacity: 1; transform: scale(1) translateY(0); }
-}
-
-/* --- Botón Flotante --- */
-#enable-sound {
-    position: fixed;
-    bottom: 20px;
-    left: 20px;
-    z-index: 100;
-    padding: 12px 25px;
+/* TARJETA DE LLAMADO (Compacta para que entren muchas) */
+.call-card {
     background: white;
     color: #333;
-    border: none;
-    border-radius: 30px;
-    font-weight: bold;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-    transition: transform 0.2s;
-}
-#enable-sound:hover { transform: scale(1.05); }
-/* =========================================
-   ESTILOS DEL ESTADO VACÍO (NEÓN / ACTIVO)
-   ========================================= */
-
-.empty-state-container {
+    padding: 10px 15px;
+    border-radius: 8px;
     display: flex;
-    flex-direction: column;
+    justify-content: space-between;
     align-items: center;
-    justify-content: center;
-    height: 100%;
-    text-align: center;
-    padding: 40px;
+    border-left: 6px solid var(--color-llamando);
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    animation: slideInLeft 0.4s;
+    min-height: 70px; /* Altura fija para que sean uniformes */
 }
 
-/* Círculo indicador */
-.status-indicator {
-    position: relative;
-    width: 100px; /* Un poco más grande */
-    height: 100px;
+.call-info h3 { font-size: 1.4rem; margin: 0; font-weight: 800; color: #0f172a; }
+.call-info p { font-size: 0.9rem; margin: 0; color: #64748b; font-weight: 600; }
+.call-room { 
+    background: var(--color-llamando); color: white; 
+    padding: 5px 10px; border-radius: 15px; 
+    font-weight: 700; font-size: 1rem; 
+    text-align: center; min-width: 140px;
+}
+.call-room span { display: block; font-size: 0.55rem; opacity: 0.8; }
+
+/* --- COLUMNA ESPERA (Derecha) --- */
+#col-waiting { background: rgba(30, 41, 59, 0.6); }
+.header-waiting { background: var(--color-espera); padding: 8px; text-align: center; }
+.header-waiting h3 { margin: 0; font-size: 1.2rem; color: white; letter-spacing: 1px; }
+
+#patients-list { list-style: none; padding: 0; margin: 0; overflow-y: auto; height: 100%; }
+#patients-list::-webkit-scrollbar { display: none; }
+
+#patients-list li {
+    padding: 8px 15px;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+    font-size: 1.3rem;
+    color: #e2e8f0;
+    display: flex;
+    justify-content: space-between;
+    font-weight: 700;
+}
+#patients-list li:nth-child(odd) { background: rgba(255,255,255,0.02); }
+
+/* --- CINTA NOTICIAS --- */
+#news-ticker {
+    grid-column: 1 / -1;
+    background: var(--color-espera);
+    border-radius: 8px;
     display: flex;
     align-items: center;
-    justify-content: center;
-    margin-bottom: 25px;
+    overflow: hidden;
+    white-space: nowrap;
 }
+.ticker-wrap { display: inline-block; padding-left: 100%; animation: ticker 30s linear infinite; }
+.ticker-item { display: inline-block; padding: 0 50px; font-size: 0.9rem; font-weight: 600; color: white; }
 
-/* El punto central (Ahora brilla) */
-.status-dot {
-    width: 20px;
-    height: 20px;
-    background-color: #00ff88; /* Verde Neón Brillante */
-    border-radius: 50%;
-    z-index: 2;
-    /* Efecto de resplandor */
-    box-shadow: 0 0 20px rgba(0, 255, 136, 0.8); 
-}
+@keyframes ticker { 0% { transform: translate3d(0, 0, 0); } 100% { transform: translate3d(-100%, 0, 0); } }
+@keyframes slideInLeft { from { transform: translateX(-30px); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
 
-/* El anillo que pulsa */
-.pulse-ring {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    border: 3px solid #00ff88; /* Borde Verde */
-    border-radius: 50%;
-    opacity: 0;
-    box-shadow: 0 0 15px rgba(0, 255, 136, 0.4); /* Resplandor en el anillo */
-    animation: pulse-animation 2s infinite ease-out;
-}
-
-/* Texto (Más blanco y legible) */
-.status-text h3 {
-    margin: 0;
-    font-size: 1.4rem;
-    color: #ffffff; /* Blanco puro */
-    font-weight: 800;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    text-shadow: 0 0 10px rgba(0, 255, 136, 0.4); /* Sombra verde sutil */
-}
-
-.status-text p {
-    margin: 8px 0 0 0;
-    font-size: 1rem;
-    color: rgba(255, 255, 255, 0.8); /* Blanco semitransparente */
-    font-weight: 500;
-}
-
-/* --- Animación del Radar --- */
-@keyframes pulse-animation {
-    0% {
-        transform: scale(0.1);
-        opacity: 1;
-    }
-    50% {
-        opacity: 0.6;
-    }
-    100% {
-        transform: scale(1.8); /* Se expande más */
-        opacity: 0;
-    }
-}
-
-/* Icono del paciente en la lista */
-.patient-icon {
-    color: var(--color-primario);
-    margin-right: 10px;
-    font-size: 1.1em;
-}
+#enable-sound { position: fixed; bottom: 50px; right: 20px; padding: 8px 15px; border-radius: 20px; border:none; font-weight:bold; cursor:pointer; z-index:999; opacity: 0.8;}
+.empty-message { text-align: center; padding: 30px; opacity: 0.5; }

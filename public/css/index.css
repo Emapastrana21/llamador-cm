@@ -102,21 +102,82 @@ h1 {
     to { opacity: 1; transform: scale(1); }
 }
 
-#pacientes-lista .info {
-    font-size: 1.2rem;
-    font-weight: 600;
-    color: #444;
-    border-bottom: 1px solid #eee;
-    padding-bottom: 10px;
-}
-
-#pacientes-lista .btn-container {
+/* --- Tarjeta de Paciente (MEJORADA) --- */
+#pacientes-lista li {
+    background-color: var(--card-bg);
+    margin-bottom: 15px;
+    padding: 0; /* Quitamos padding general */
+    border-radius: 15px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
     display: flex;
-    gap: 10px;
-    justify-content: flex-end; /* Botones a la derecha */
+    flex-direction: column; /* En móviles, columna */
+    overflow: hidden; /* Para que los bordes redondeados funcionen */
+    border-left: 6px solid var(--color-primario); /* Borde de color a la izquierda */
+    transition: transform 0.2s;
 }
 
-/* --- Botones de Acción --- */
+#pacientes-lista li:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+}
+
+/* Contenido Principal */
+.card-content {
+    padding: 20px;
+    width: 100%;
+}
+
+.card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.patient-name {
+    font-size: 1.4rem;
+    font-weight: 800;
+    color: #333;
+}
+
+.patient-time {
+    font-size: 0.9rem;
+    color: #888;
+    font-weight: 600;
+}
+
+.card-details {
+    display: flex;
+    gap: 15px;
+    align-items: center;
+}
+
+.detail-badge {
+    background-color: #eef2f7;
+    color: var(--color-primario);
+    padding: 5px 10px;
+    border-radius: 8px;
+    font-weight: 700;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+}
+
+.detail-text {
+    color: #666;
+    font-size: 0.9rem;
+}
+
+/* Botonera (Abajo) */
+.btn-container {
+    display: flex;
+    background-color: #f8f9fa; /* Fondo grisecito para los botones */
+    padding: 10px 20px;
+    gap: 10px;
+    justify-content: flex-end;
+    border-top: 1px solid #eee;
+}
+
+/* Botones Modernos */
 .btn {
     border: none;
     padding: 10px 20px;
@@ -125,15 +186,20 @@ h1 {
     color: white;
     font-weight: 600;
     font-size: 0.9rem;
-    transition: filter 0.2s, transform 0.2s;
-    flex: 1; /* En móvil ocupan todo el ancho */
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1); /* Sombra suave */
+    display: flex;
+    align-items: center;
+    gap: 5px;
 }
 
 .btn:hover {
     filter: brightness(1.1);
-    transform: translateY(-2px);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
 }
 
+/* Colores Específicos sin bordes */
 .btn-llamar { background-color: var(--color-primario); }
 .btn-atendido { background-color: var(--color-exito); }
 .btn-no-atendido { background-color: var(--color-peligro); }
@@ -329,4 +395,17 @@ tr:hover td {
 .status-no {
     background-color: var(--color-peligro);
     box-shadow: 0 2px 5px rgba(220, 53, 69, 0.3);
+}
+/* --- MEJORA: CABECERA FIJA (STICKY) --- */
+/* Esto hace que el título, pestañas y filtros viajen con vos al bajar */
+h1, .tabs-container, .control-container {
+    position: sticky;
+    z-index: 100; 
+}
+
+h1, .tabs-container, .control-container {
+    position: static !important; /* Anula el sticky */
+    top: auto !important;
+    z-index: 0 !important;
+    background: transparent !important; /* Saca el fondo que tapa */
 }

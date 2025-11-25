@@ -4,11 +4,8 @@
 :root {
     --color-primario: #007bff;
     --color-primario-hover: #0056b3;
-    /* El mismo gradiente que el Notificador para consistencia */
     --bg-gradient: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
-    --glass-bg: rgba(255, 255, 255, 0.9); /* Más opaco para leer bien los campos */
-    --glass-border: rgba(255, 255, 255, 0.4);
-    --glass-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+    --glass-bg: rgba(255, 255, 255, 0.95); /* Casi blanco sólido */
     --text-color: #333;
 }
 
@@ -17,11 +14,9 @@
 body {
     font-family: 'Montserrat', sans-serif;
     margin: 0;
-    /* Fondo animado */
     background: var(--bg-gradient);
     background-size: 400% 400%;
     animation: gradientBG 15s ease infinite;
-    
     color: var(--text-color);
     display: flex;
     flex-direction: column;
@@ -37,25 +32,20 @@ body {
     100% { background-position: 0% 50%; }
 }
 
-/* --- Tarjeta de Vidrio (Formulario) --- */
+/* --- TARJETA DE FORMULARIO --- */
 #container {
     background: var(--glass-bg);
-    backdrop-filter: blur(10px); /* Efecto borroso detrás */
-    -webkit-backdrop-filter: blur(10px);
-    border: 1px solid var(--glass-border);
-    box-shadow: var(--glass-shadow);
-    
-    padding: 30px 40px;
+    padding: 40px;
     border-radius: 20px;
-    max-width: 500px;
+    /* Sombra más suave y difusa "estilo Apple" */
+    box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+    max-width: 450px;
     width: 100%;
-    
-    /* Animación de entrada */
-    animation: slideUp 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
+    animation: slideUp 0.6s ease-out;
 }
 
 @keyframes slideUp {
-    from { opacity: 0; transform: translateY(40px); }
+    from { opacity: 0; transform: translateY(20px); }
     to { opacity: 1; transform: translateY(0); }
 }
 
@@ -63,64 +53,70 @@ h1 {
     text-align: center;
     color: var(--color-primario);
     margin-top: 0;
-    margin-bottom: 25px;
+    margin-bottom: 30px;
     font-weight: 800;
-    text-transform: uppercase;
-    letter-spacing: 1px;
+    font-size: 1.8rem;
+    letter-spacing: -0.5px; /* Letras un pelín más juntas */
 }
 
 form {
     display: flex;
     flex-direction: column;
-    gap: 15px; /* Espacio uniforme entre campos */
+    gap: 18px; /* Más aire entre campos */
 }
 
 label {
     font-weight: 600;
-    font-size: 0.9rem;
-    margin-bottom: 5px;
+    font-size: 0.85rem;
+    margin-bottom: 8px;
     display: block;
     color: #555;
+    text-transform: uppercase; /* Etiquetas en mayúscula quedan pro */
+    letter-spacing: 0.5px;
 }
 
-/* --- Campos Modernos --- */
+/* --- INPUTS MEJORADOS --- */
 input, select {
-    padding: 12px 15px;
-    border-radius: 10px;
-    border: 2px solid #e1e1e1;
+    padding: 14px 16px; /* Más relleno */
+    border-radius: 12px; /* Bordes más redondos */
+    border: 2px solid transparent; /* Borde invisible por defecto */
     font-size: 1rem;
     width: 100%;
-    background-color: #f9f9f9;
-    transition: all 0.3s ease;
+    background-color: #f1f5f9; /* Gris muy suave de fondo */
+    transition: all 0.2s ease;
     font-family: 'Montserrat', sans-serif;
+    color: #333;
 }
 
+/* Efecto al hacer clic */
 input:focus, select:focus {
     outline: none;
-    border-color: var(--color-primario);
-    background-color: #fff;
-    box-shadow: 0 0 0 4px rgba(0, 123, 255, 0.1);
+    background-color: #fff; /* Se pone blanco */
+    border-color: var(--color-primario); /* Borde azul */
+    box-shadow: 0 0 0 4px rgba(0, 123, 255, 0.1); /* Resplandor azul suave */
 }
 
-/* --- Botón Brillante --- */
+/* --- BOTÓN FULL WIDTH --- */
 button {
-    padding: 15px;
-    background: linear-gradient(to right, #007bff, #0056b3);
+    width: 100%; /* ¡OCUPA TODO EL ANCHO! */
+    padding: 16px;
+    background: var(--color-primario);
     color: white;
     border: none;
-    border-radius: 10px;
+    border-radius: 12px;
     cursor: pointer;
-    font-size: 1.1rem;
-    font-weight: 800;
-    text-transform: uppercase;
+    font-size: 1rem;
+    font-weight: 700;
     letter-spacing: 1px;
-    transition: transform 0.2s, box-shadow 0.2s;
+    text-transform: uppercase;
     margin-top: 10px;
+    transition: transform 0.1s, background-color 0.2s;
+    box-shadow: 0 4px 12px rgba(0, 123, 255, 0.3);
 }
 
 button:hover {
+    background-color: var(--color-primario-hover);
     transform: translateY(-2px);
-    box-shadow: 0 5px 15px rgba(0, 123, 255, 0.4);
 }
 
 button:active {

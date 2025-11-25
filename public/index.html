@@ -19,16 +19,33 @@
 
     <div id="vista-espera">
         <div class="control-container">
-            <select id="consultorio-select">
-                <option value="">Todos los Consultorios</option>
-                <option value="004">Consultorio 004</option>
-                <option value="005">Consultorio 005</option>
+         <select id="consultorio-select">
+            <option value="">Todos los Consultorios</option>
+
+            <optgroup label="Planta Baja">
+                <option value="PB-01">Consultorio 01 (PB)</option>
+                <option value="PB-02">Consultorio 02 (PB)</option>
+                <option value="PB-03">Consultorio 03 (PB)</option>
+                <option value="PB-04">Consultorio 04 (PB)</option>
+                <option value="PB-05">Consultorio 05 (PB)</option>
+            </optgroup>
+
+            <optgroup label="Primer Piso">
                 <option value="101">Consultorio 101</option>
                 <option value="102">Consultorio 102</option>
                 <option value="103">Consultorio 103</option>
                 <option value="104">Consultorio 104</option>
                 <option value="105">Consultorio 105</option>
-            </select>
+            </optgroup>
+
+            <optgroup label="Segundo Piso">
+                <option value="201">Consultorio 201</option>
+                <option value="202">Consultorio 202</option>
+                <option value="203">Consultorio 203</option>
+                <option value="204">Consultorio 204</option>
+                <option value="205">Consultorio 205</option>
+            </optgroup>
+        </select>
             <button id="consultar-btn">Refrescar</button>
         </div>
         <ul id="pacientes-lista"></ul>

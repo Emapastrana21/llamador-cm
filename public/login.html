@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Acceso Seguro</title>
+    <link rel="stylesheet" href="/css/register.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</head>
+<body>
+    <div id="container" style="max-width: 400px;">
+        <h1>🔐 ACCESO</h1>
+        
+        <form id="login-form">
+            <div>
+                <label for="user">Usuario</label>
+                <input type="text" id="user" required placeholder="admin" style="text-transform: none;">
+            </div>
+
+            <div>
+                <label for="pass">Contraseña</label>
+                <input type="password" id="pass" required placeholder="••••" style="text-transform: none;">
+            </div>
+
+            <div>
+                <button type="submit">INGRESAR</button>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        const form = document.getElementById('login-form');
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const user = document.getElementById('user').value;
+            const pass = document.getElementById('pass').value;
+
+            // Enviamos los datos al servidor
+            const res = await fetch('/api/login', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({ user, pass })
+            });
+
+            const data = await res.json();
+
+            if (data.success) {
+                // Guardamos la "llave" en el navegador
+                localStorage.setItem('usuario_autorizado', 'true');
+                // Redirigimos al panel principal
+                window.location.href = '/index.html';
+            } else {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Acceso Denegado',
+                    text: 'Usuario o contraseña incorrectos',
+                    confirmButtonColor: '#d33'
+                });
+            }
+        });
+    </script>
+</body>
+</html>

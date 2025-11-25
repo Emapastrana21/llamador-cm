@@ -1,138 +1,121 @@
 document.addEventListener('DOMContentLoaded', () => {
     const socket = io();
     
-    const notificationsContainer = document.getElementById('notifications');
-    const patientsListUI = document.getElementById('patients');
-    const enableSoundButton = document.getElementById('enable-sound');
+    // Elementos
+    const callingListUI = document.getElementById('notifications-list');
+    const waitingListUI = document.getElementById('patients-list');
+    const callingPanel = document.getElementById('col-calling'); // Panel central para el flash
+    const videoElement = document.getElementById('promo-video');
+    const imageElement = document.getElementById('static-banner');
     const notificationSound = document.getElementById('notification-sound');
-    const videoPlayer = document.getElementById('promo-video');
+    const enableSoundBtn = document.getElementById('enable-sound');
 
-    // --- ⏰ LÓGICA DEL RELOJ (NUEVO) ---
-    const updateClock = () => {
+    // 1. RELOJ
+    setInterval(() => {
         const now = new Date();
-        // Hora
-        const timeString = now.toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit' });
-        document.getElementById('clock-time').textContent = timeString;
-        // Fecha
-        const dateString = now.toLocaleDateString('es-AR', { weekday: 'long', day: 'numeric', month: 'long' });
-        document.getElementById('clock-date').textContent = dateString;
-    };
-    setInterval(updateClock, 1000); // Actualizar cada segundo
-    updateClock(); // Ejecutar ya
+        document.getElementById('clock-time').textContent = now.toLocaleTimeString('es-AR', {hour:'2-digit', minute:'2-digit'});
+        document.getElementById('clock-date').textContent = now.toLocaleDateString('es-AR', {weekday:'long', day:'numeric', month:'long'});
+    }, 1000);
 
-    // --- 🎬 REPRODUCTOR DE VIDEO ---
+    // 2. VIDEO INTELIGENTE (10 min)
     let videoList = [];
-    let currentVideoIndex = 0;
+    const INTERVALO_VIDEO = 10 * 60 * 1000; 
 
-    const iniciarReproductor = async () => {
+    const cargarVideos = async () => {
         try {
-            const response = await fetch('/api/videos');
-            videoList = await response.json();
-            if (videoList.length > 0) {
-                reproducirVideo(0);
-            }
-        } catch (error) {
-            console.error("Error cargando videos:", error);
-        }
+            const res = await fetch('/api/videos');
+            videoList = await res.json();
+            if(videoList.length > 0) setTimeout(reproducirSecuencia, 5000);
+        } catch (e) { console.error(e); }
     };
 
-    const reproducirVideo = (index) => {
-        if (videoList.length === 0) return;
-        const videoName = videoList[index];
-        videoPlayer.src = `/media/videos/${videoName}`;
-        videoPlayer.play().catch(() => {}); // Ignorar error si falta interacción
+    const reproducirSecuencia = () => {
+        if(videoList.length === 0) return;
+        imageElement.style.display = 'none';
+        videoElement.style.display = 'block';
+        
+        const randomVideo = videoList[Math.floor(Math.random() * videoList.length)];
+        videoElement.src = `/media/videos/${randomVideo}`;
+        videoElement.volume = 0.5;
+        videoElement.play().catch(() => {});
+
+        videoElement.onended = () => {
+            videoElement.style.display = 'none';
+            imageElement.style.display = 'block';
+            setTimeout(reproducirSecuencia, INTERVALO_VIDEO);
+        };
     };
 
-    videoPlayer.addEventListener('ended', () => {
-        currentVideoIndex = (currentVideoIndex + 1) % videoList.length;
-        reproducirVideo(currentVideoIndex);
-    });
-
-    // --- 📋 LISTA DE ESPERA ---
-    // --- 📋 LÓGICA DE LA LISTA DE ESPERA ---
-    const cargarPacientes = () => {
-        // Pedimos al backend la lista
+    // 3. GESTIÓN DE LISTAS
+    const cargarListas = () => {
         fetch('/pacientes?nro_consultorio=')
-            .then(response => response.json())
+            .then(r => r.json())
             .then(pacientes => {
-                patientsListUI.innerHTML = ''; // Limpiamos la lista vieja
-// --- ESTADO VACÍO (TEXTO CAMBIADO) ---
+                waitingListUI.innerHTML = '';
                 if (pacientes.length === 0) {
-                    patientsListUI.innerHTML = `
-                        <div class="empty-state-container">
-                            <div class="status-indicator">
-                                <div class="pulse-ring"></div>
-                                <div class="status-dot"></div>
-                            </div>
-                            <div class="status-text">
-                                <h3>SALA DE ESPERA</h3>
-                                <p>Aguarde a ser llamado</p>
-                            </div>
-                        </div>
-                    `;
+                    waitingListUI.innerHTML = '<div class="empty-message">SALA DE ESPERA VACÍA</div>';
                 } else {
-                    // CASO B: Si SÍ hay pacientes (esto sigue igual)
-                    pacientes.forEach(patient => {
+                    pacientes.forEach(p => {
                         const li = document.createElement('li');
-                        li.setAttribute('data-id', patient.id);
-                        // Agregamos un icono de usuario antes del nombre para más estilo
-                        li.innerHTML = `<span class="patient-icon">👤</span> ${patient.nombre} ${patient.apellido}`;
-                        patientsListUI.appendChild(li);
+                        li.innerHTML = `<span>👤 ${p.nombre} ${p.apellido}</span> <span style="font-size:0.8em; opacity:0.7">${p.especialidad}</span>`;
+                        waitingListUI.appendChild(li);
                     });
                 }
-                // ---------------------------------------
             });
     };
 
-    socket.on('actualizar_lista', cargarPacientes);
-    socket.on('nuevo_paciente', cargarPacientes);
+    socket.on('actualizar_lista', cargarListas);
+    socket.on('nuevo_paciente', cargarListas);
 
-    // --- 🔔 LLAMADOS (DISEÑO MEJORADO) ---
+    // 4. LLAMADA (Con Efecto Flash)
     socket.on('llamada', (data) => {
-        const notificationElement = document.createElement('div');
-        notificationElement.classList.add('notification');
-        
-        // Estructura HTML mejorada para el CSS nuevo
-        notificationElement.innerHTML = `
-            <span class="name">${data.nombre} ${data.apellido}</span>
-            <div class="details">
-                ${data.especialidad}<br>
-                <strong>CONSULTORIO ${data.nro_consultorio}</strong>
-            </div>
-        `;
-        
-        notificationsContainer.prepend(notificationElement);
+        // Activar Flash en la columna central
+        callingPanel.classList.remove('flash-effect'); // Reiniciar si ya estaba
+        void callingPanel.offsetWidth; // Truco para reiniciar animación
+        callingPanel.classList.add('flash-effect');
 
-        if (notificationSound) {
+        // Crear tarjeta
+        const card = document.createElement('div');
+        card.className = 'call-card';
+        card.innerHTML = `
+            <h3>${data.nombre} ${data.apellido}</h3>
+            <p>${data.especialidad}</p>
+            <div class="call-room">CONSULTORIO ${data.nro_consultorio}</div>
+        `;
+        callingListUI.prepend(card);
+
+        if(notificationSound) {
             notificationSound.currentTime = 0;
             notificationSound.play().catch(() => {});
-            
-            // Bajar volumen video temporalmente
-            const vol = videoPlayer.volume;
-            videoPlayer.volume = 0.1;
-            setTimeout(() => { videoPlayer.volume = vol; }, 3000);
         }
 
-        // Solo mostramos el último llamado grande (o máx 2) para no tapar
-        if (notificationsContainer.children.length > 2) {
-            notificationsContainer.removeChild(notificationsContainer.lastChild);
+        // Solo mantenemos 1 cartel gigante (el más importante)
+        if(callingListUI.children.length > 1) {
+            callingListUI.removeChild(callingListUI.lastChild);
         }
     });
 
-    // --- ACTIVAR SONIDO ---
-    enableSoundButton.addEventListener('click', () => {
-        if (notificationSound) {
-            notificationSound.play().then(() => {
-                notificationSound.pause();
-                notificationSound.currentTime = 0;
-            });
-        }
-        videoPlayer.muted = false;
-        if(videoPlayer.paused && videoList.length > 0) videoPlayer.play();
-        enableSoundButton.style.display = 'none';
+    // 5. DETECTOR DE DESCONEXIÓN (Seguridad)
+    socket.on('disconnect', () => {
+        const offlineMsg = document.createElement('div');
+        offlineMsg.id = 'offline-overlay';
+        offlineMsg.style.cssText = "position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.85); color:white; display:flex; flex-direction:column; align-items:center; justify-content:center; z-index:9999; font-size:2rem; text-align:center;";
+        offlineMsg.innerHTML = "<h1>⚠️ SISTEMA DESCONECTADO</h1><p>Intentando reconectar...</p>";
+        document.body.appendChild(offlineMsg);
+    });
+
+    socket.on('connect', () => {
+        const existingOverlay = document.getElementById('offline-overlay');
+        if (existingOverlay) existingOverlay.remove();
+        cargarListas(); // Recargar datos al volver
     });
 
     // Inicio
-    cargarPacientes();
-    iniciarReproductor();
+    enableSoundBtn.addEventListener('click', () => {
+        notificationSound.play().then(() => { notificationSound.pause(); notificationSound.currentTime=0; });
+        enableSoundBtn.style.display = 'none';
+    });
+
+    cargarListas();
+    cargarVideos();
 });

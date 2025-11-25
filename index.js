@@ -6,6 +6,7 @@ require('dotenv').config();
 // --- IMPORTAMOS LAS RUTAS ---
 const pacienteRoutes = require('./src/routes/paciente.routes');
 const videoRoutes = require('./src/routes/video.routes'); // <--- ¡ESTA ES CLAVE!
+const authRoutes = require('./src/routes/auth.routes'); // <--- 1. NUEVO
 
 // --- Configuración Inicial ---
 const app = express();
@@ -28,6 +29,7 @@ io.on('connection', (socket) => {
 // --- ACTIVAMOS LAS RUTAS ---
 app.use(pacienteRoutes);
 app.use(videoRoutes); // <--- ¡Y ESTA TAMBIÉN!
+app.use(authRoutes);
 
 // --- Iniciar el servidor ---
 const PORT = process.env.PORT || 3000;

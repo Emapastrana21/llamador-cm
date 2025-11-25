@@ -5,13 +5,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Registro de Pacientes</title>
     
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
     <link rel="stylesheet" href="/css/register.css">
+    <link rel="icon" href="/images/logo_emer.jpeg" type="image/jpeg">
 </head>
 <body>
     <div id="container">
         <h1>Registrar Paciente</h1>
         
-        <form action="/register" method="POST" onsubmit="return mostrarMensajeExito()">
+        <form id="form-registro" action="/register" method="POST">
 
             <div>
                 <label for="dni">DNI:</label>
@@ -35,25 +38,53 @@
 
             <div>
                 <label for="especialidad">Especialidad:</label>
-                <select id="especialidad" name="especialidad" required>
-                    <option value="Cardiologia">Cardiología</option>
-                    <option value="ClinicaMedica">Clínica Médica</option>
-                    <option value="Dermatologia">Dermatología</option>
-                    <option value="Traumatologia">Traumatología</option>
-                    </select>
+               <select id="especialidad" name="especialidad" required>
+                <option value="" disabled selected>Seleccione una especialidad</option>
+                <option value="Cardiologia">Cardiología</option>
+                <option value="ClinicaMedica">Clínica Médica</option>
+                <option value="Ginecologia">Ginecología</option>
+                <option value="Pediatria">Pediatría</option>
+                <option value="Dermatologia">Dermatología</option>
+                <option value="Endocrinologia">Endocrinología</option>
+                <option value="Gastroenterologia">Gastroenterología</option>
+                <option value="Kinesiologia">Kinesiología</option>
+                <option value="Neurologia">Neurología</option>
+                <option value="Nutricion">Nutrición</option>
+                <option value="Oftalmologia">Oftalmología</option>
+                <option value="Traumatologia">Traumatología</option>
+                <option value="Urologia">Urología</option>
+            </select>
             </div>
             
             <div>
                 <label for="nro_consultorio">Número de Consultorio:</label>
-                <select id="nro_consultorio" name="nro_consultorio" required>
-                    <option value="004">004</option>
-                    <option value="005">005</option>
-                    <option value="101">101</option>
-                    <option value="102">102</option>
-                    <option value="103">103</option>
-                    <option value="104">104</option>
-                    <option value="105">105</option>
-                </select>
+            <select id="nro_consultorio" name="nro_consultorio" required>
+                <option value="" disabled selected>Seleccione consultorio</option>
+
+                <optgroup label="Planta Baja">
+                    <option value="PB-01">Consultorio 01 (PB)</option>
+                    <option value="PB-02">Consultorio 02 (PB)</option>
+                    <option value="PB-03">Consultorio 03 (PB)</option>
+                    <option value="PB-04">Consultorio 04 (PB)</option>
+                    <option value="PB-05">Consultorio 05 (PB)</option>
+                </optgroup>
+
+                <optgroup label="Primer Piso">
+                    <option value="101">Consultorio 101</option>
+                    <option value="102">Consultorio 102</option>
+                    <option value="103">Consultorio 103</option>
+                    <option value="104">Consultorio 104</option>
+                    <option value="105">Consultorio 105</option>
+                </optgroup>
+
+                <optgroup label="Segundo Piso">
+                    <option value="201">Consultorio 201</option>
+                    <option value="202">Consultorio 202</option>
+                    <option value="203">Consultorio 203</option>
+                    <option value="204">Consultorio 204</option>
+                    <option value="205">Consultorio 205</option>
+                </optgroup>
+            </select>
             </div>
 
             <div>
