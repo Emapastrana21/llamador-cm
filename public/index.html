@@ -7,50 +7,59 @@
     
     <link rel="stylesheet" href="/css/index.css">
     
+    <!-- Scripts necesarios -->
     <script src="/socket.io/socket.io.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body>
-    <h1>Panel Médico</h1>
+    <h1>PANEL MÉDICO</h1>
 
+    <!-- BARRA DE NAVEGACIÓN (Una sola vez) -->
     <div class="tabs-container">
         <button id="tab-espera" class="tab-btn active">En Espera</button>
         <button id="tab-historial" class="tab-btn">Historial (Atendidos)</button>
+        
+        <button id="btn-reset" class="tab-btn" style="background: #dc3545; color: white; border: none; margin-left: 50px;">
+            🗑️ Cerrar Día
+        </button>
     </div>
 
+    <!-- VISTA 1: LISTA DE ESPERA -->
     <div id="vista-espera">
         <div class="control-container">
-         <select id="consultorio-select">
-            <option value="">Todos los Consultorios</option>
+            <select id="consultorio-select">
+                <option value="">Todos los Consultorios</option>
 
-            <optgroup label="Planta Baja">
-                <option value="PB-01">Consultorio 01 (PB)</option>
-                <option value="PB-02">Consultorio 02 (PB)</option>
-                <option value="PB-03">Consultorio 03 (PB)</option>
-                <option value="PB-04">Consultorio 04 (PB)</option>
-                <option value="PB-05">Consultorio 05 (PB)</option>
-            </optgroup>
+                <optgroup label="Planta Baja">
+                    <option value="PB-01">Consultorio 01 (PB)</option>
+                    <option value="PB-02">Consultorio 02 (PB)</option>
+                    <option value="PB-03">Consultorio 03 (PB)</option>
+                    <option value="PB-04">Consultorio 04 (PB)</option>
+                    <option value="PB-05">Consultorio 05 (PB)</option>
+                </optgroup>
 
-            <optgroup label="Primer Piso">
-                <option value="101">Consultorio 101</option>
-                <option value="102">Consultorio 102</option>
-                <option value="103">Consultorio 103</option>
-                <option value="104">Consultorio 104</option>
-                <option value="105">Consultorio 105</option>
-            </optgroup>
+                <optgroup label="Primer Piso">
+                    <option value="101">Consultorio 101</option>
+                    <option value="102">Consultorio 102</option>
+                    <option value="103">Consultorio 103</option>
+                    <option value="104">Consultorio 104</option>
+                    <option value="105">Consultorio 105</option>
+                </optgroup>
 
-            <optgroup label="Segundo Piso">
-                <option value="201">Consultorio 201</option>
-                <option value="202">Consultorio 202</option>
-                <option value="203">Consultorio 203</option>
-                <option value="204">Consultorio 204</option>
-                <option value="205">Consultorio 205</option>
-            </optgroup>
-        </select>
+                <optgroup label="Segundo Piso">
+                    <option value="201">Consultorio 201</option>
+                    <option value="202">Consultorio 202</option>
+                    <option value="203">Consultorio 203</option>
+                    <option value="204">Consultorio 204</option>
+                    <option value="205">Consultorio 205</option>
+                </optgroup>
+            </select>
             <button id="consultar-btn">Refrescar</button>
         </div>
         <ul id="pacientes-lista"></ul>
     </div>
 
+    <!-- VISTA 2: HISTORIAL -->
     <div id="vista-historial" style="display: none;">
         <div class="table-container">
             <table id="historial-table">
@@ -64,7 +73,8 @@
                     </tr>
                 </thead>
                 <tbody id="historial-body">
-                    </tbody>
+                    <!-- Aquí se cargan los datos -->
+                </tbody>
             </table>
         </div>
     </div>

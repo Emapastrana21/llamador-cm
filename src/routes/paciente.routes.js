@@ -9,7 +9,8 @@ const {
     llamarPaciente,
     marcarAtendido,
     getPacienteInfo,
-    getHistorial // <--- ¡AGREGADO!
+    getHistorial,
+    resetearDia // <--- ¡Agrégalo aquí!
 } = require('../controllers/paciente.controller');
 
 // 2. Definimos las URLs de nuestra API.
@@ -37,6 +38,9 @@ router.get('/paciente', getPacienteInfo);
 
 // Ruta para ver los atendidos
 router.get('/historial', getHistorial);
+
+// Definimos la ruta de reset (al final o junto a las otras)
+router.delete('/api/reset', resetearDia);
 
 // 3. Exportamos el 'router' para que index.js pueda usarlo.
 module.exports = router;

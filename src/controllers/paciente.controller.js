@@ -129,6 +129,7 @@ const getPacienteInfo = async (req, res) => {
         res.status(500).json({ success: false, message: 'Error en el servidor' });
     }
 };
+
 // --- LÓGICA DE ENDPOINT: Obtener Historial ---
 const getHistorial = async (req, res) => {
     try {
@@ -150,6 +151,22 @@ const getHistorial = async (req, res) => {
     }
 };
 
+// --- LÓGICA: Borrar todo (Resetear sistema) ---
+const resetearDia = async (req, res) => {
+    try {
+        // TRUNCATE borra los datos y RESTART IDENTITY pone los IDs en 1 de nuevo
+        await pool.query('TRUNCATE TABLE pacientes RESTART IDENTITY');
+        
+        const io = req.app.get('socketio');
+        io.emit('actualizar_lista'); // Avisa a todas las pantallas que se vació todo
+        
+        res.json({ success: true, message: 'Sistema reiniciado correctamente' });
+    } catch (err) {
+        console.error('Error al resetear:', err);
+        res.status(500).json({ success: false });
+    }
+};
+
 // Exportamos todas las funciones para usarlas en las rutas
 module.exports = {
     registrarPaciente,
@@ -157,5 +174,6 @@ module.exports = {
     llamarPaciente,
     marcarAtendido,
     getPacienteInfo,
-    getHistorial // <--- ¡AGREGADO!
+    getHistorial,
+    resetearDia 
 };

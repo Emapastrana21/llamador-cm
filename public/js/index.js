@@ -1,7 +1,10 @@
-// GUARDIA DE SEGURIDAD
+// public/js/index.js
+
+// --- 1. GUARDIA DE SEGURIDAD ---
 if (!localStorage.getItem('usuario_autorizado')) {
     window.location.href = '/login.html';
 }
+
 document.addEventListener('DOMContentLoaded', () => {
     // Conectamos este panel al servidor de Sockets
     const socket = io();
@@ -11,81 +14,79 @@ document.addEventListener('DOMContentLoaded', () => {
     const consultarBtn = document.getElementById('consultar-btn');
     const consultorioSelect = document.getElementById('consultorio-select');
     const listaPacientesUI = document.getElementById('pacientes-lista');
+    
+    // Elementos de Pestañas e Historial
+    const tabEspera = document.getElementById('tab-espera');
+    const tabHistorial = document.getElementById('tab-historial');
+    const vistaEspera = document.getElementById('vista-espera');
+    const vistaHistorial = document.getElementById('vista-historial');
+    const historialBody = document.getElementById('historial-body');
+    const btnReset = document.getElementById('btn-reset');
 
-    // --- 1. LÓGICA DE SOCKETS (Qué hacer cuando el servidor avisa) ---
+    // --- 2. LÓGICA DE SOCKETS (Centralizada) ---
 
-    // El servidor avisa que se envió una llamada (para mostrar un feedback)
+    // Feedback visual cuando se llama a alguien
     socket.on('llamada', (data) => {
         notificationElement.textContent = `Llamando a ${data.nombre} ${data.apellido}`;
         notificationElement.style.display = 'block';
         setTimeout(() => {
             notificationElement.style.display = 'none';
-        }, 3000); // 3 segundos
+        }, 3000);
     });
 
-    // El servidor avisa que la lista cambió (alguien se registró o fue atendido)
+    // Cuando cambia la lista (nuevo paciente, atendido, o reset)
     socket.on('actualizar_lista', () => {
-        console.log('Socket: "actualizar_lista" recibido. Recargando pacientes...');
-        consultarPacientes(); // Volvemos a pedir la lista
+        console.log('Socket: Actualizando datos...');
+        // Si estamos viendo la espera, recargamos la espera
+        if (vistaEspera.style.display !== 'none') {
+            consultarPacientes();
+        }
+        // Si estamos viendo el historial, recargamos el historial
+        if (vistaHistorial.style.display !== 'none') {
+            cargarHistorial();
+        }
     });
 
     socket.on('nuevo_paciente', () => {
-        console.log('Socket: "nuevo_paciente" recibido. Recargando pacientes...');
-        consultarPacientes(); // Volvemos a pedir la lista
+        // Solo nos interesa recargar la lista de espera
+        if (vistaEspera.style.display !== 'none') {
+            consultarPacientes();
+        }
     });
 
-    // --- 2. LÓGICA DE BOTONES (Qué hacer cuando el médico hace clic) ---
+    // --- 3. FUNCIONES GLOBALES (Para los botones en el HTML) ---
 
-    // Función para el botón "Llamar"
     window.llamarPaciente = (id) => {
-        // Usamos fetch con POST al endpoint /llamar/:id
-        fetch(`/llamar/${id}`, {
-            method: 'POST'
-        })
-        .then(response => {
-            if (!response.ok) console.error('Error al llamar');
-        })
-        .catch(err => console.error('Error de red:', err));
+        fetch(`/llamar/${id}`, { method: 'POST' })
+            .then(res => { if (!res.ok) console.error('Error al llamar'); })
+            .catch(err => console.error('Error de red:', err));
     };
 
-    // Función para los botones "Atendido" y "No Atendido"
     window.marcarAtendido = (id, motivo) => {
-        // Usamos fetch con PATCH al endpoint /atendido/:id
         fetch(`/atendido/${id}`, {
             method: 'PATCH',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ motivo }), // Enviamos el motivo
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ motivo }),
         })
-        .then(response => {
-            if (!response.ok) console.error('Error al marcar atendido');
-            // No hacemos nada más, el socket 'actualizar_lista' se encargará
-        })
+        .then(res => { if (!res.ok) console.error('Error al marcar'); })
         .catch(err => console.error('Error de red:', err));
     };
 
-    // --- 3. LÓGICA DE VISTA (Dibujar la lista) ---
+    // --- 4. LÓGICA DE VISTA (Dibujar Listas) ---
 
-    // Función principal para pedir y dibujar la lista de pacientes
+    // A. Lista de Espera
     const consultarPacientes = () => {
         const nroConsultorio = consultorioSelect.value;
-        
-        // Pedimos al backend la lista, filtrando por consultorio
         fetch(`/pacientes?nro_consultorio=${nroConsultorio}`)
             .then(response => response.json())
             .then(pacientes => {
-                listaPacientesUI.innerHTML = ''; // Limpiar la lista
-                
-                // Dibujar cada paciente
+                listaPacientesUI.innerHTML = ''; 
                 pacientes.forEach(paciente => {
                     const item = document.createElement('li');
                     item.setAttribute('data-id', paciente.id);
                     
                     const horario = new Date(paciente.horario).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-// ... dentro del forEach ...
-                    
-                    // HTML interno MEJORADO para cada item
+
                     item.innerHTML = `
                         <div class="card-content">
                             <div class="card-header">
@@ -97,7 +98,6 @@ document.addEventListener('DOMContentLoaded', () => {
                                 <span class="detail-text">DNI: ${paciente.dni}</span>
                             </div>
                         </div>
-                        
                         <div class="btn-container">
                             <button onclick="llamarPaciente(${paciente.id})" class="btn btn-llamar">📢 Llamar</button>
                             <button onclick="marcarAtendido(${paciente.id}, 'ATENDIDO')" class="btn btn-atendido">✅ Atendido</button>
@@ -105,65 +105,19 @@ document.addEventListener('DOMContentLoaded', () => {
                         </div>
                     `;
                     listaPacientesUI.appendChild(item);
-                    // ...
                 });
             });
     };
 
-    // --- 4. INICIO ---
-
-    // Conectar el botón "Consultar" a la función
-    consultarBtn.addEventListener('click', consultarPacientes);
-    
-    // Cargar la lista de pacientes apenas se abre la página
-    consultarPacientes(); 
-// ... (todo tu código anterior) ...
-    
-    // Cargar la lista de pacientes apenas se abre la página
-    consultarPacientes(); 
-
-    // ==================================================
-    //      ⬇️  Cambio de historial  ⬇️
-    // ==================================================
-
-    const tabEspera = document.getElementById('tab-espera');
-    const tabHistorial = document.getElementById('tab-historial');
-    const vistaEspera = document.getElementById('vista-espera');
-    const vistaHistorial = document.getElementById('vista-historial');
-    const historialBody = document.getElementById('historial-body');
-
-    // Función para cambiar de pestaña
-    const cambiarPestaña = (tab) => {
-        if (tab === 'espera') {
-            vistaEspera.style.display = 'block';
-            vistaHistorial.style.display = 'none';
-            tabEspera.classList.add('active');
-            tabHistorial.classList.remove('active');
-            consultarPacientes(); // Refrescar espera
-        } else {
-            vistaEspera.style.display = 'none';
-            vistaHistorial.style.display = 'block';
-            tabEspera.classList.remove('active');
-            tabHistorial.classList.add('active');
-            cargarHistorial(); // Cargar datos de la tabla
-        }
-    };
-
-    tabEspera.addEventListener('click', () => cambiarPestaña('espera'));
-    tabHistorial.addEventListener('click', () => cambiarPestaña('historial'));
-
-    // Función para pedir el historial al backend
+    // B. Lista de Historial
     const cargarHistorial = () => {
         fetch('/historial')
             .then(res => res.json())
             .then(pacientes => {
-                historialBody.innerHTML = ''; // Limpiar tabla
-                
+                historialBody.innerHTML = '';
                 pacientes.forEach(p => {
                     const fecha = new Date(p.horario);
                     const hora = fecha.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
-                    
-                    // Determinar color del estado
                     const estadoClass = p.motivo === 'ATENDIDO' ? 'status-ok' : 'status-no';
                     
                     const row = `
@@ -180,11 +134,54 @@ document.addEventListener('DOMContentLoaded', () => {
             });
     };
 
-    // Si llega un socket de actualización, y estamos viendo el historial, refrescarlo
-    socket.on('actualizar_lista', () => {
-        if (vistaHistorial.style.display === 'block') {
+    // --- 5. PESTAÑAS Y EVENTOS ---
+
+    const cambiarPestaña = (tab) => {
+        if (tab === 'espera') {
+            vistaEspera.style.display = 'block';
+            vistaHistorial.style.display = 'none';
+            tabEspera.classList.add('active');
+            tabHistorial.classList.remove('active');
+            consultarPacientes();
+        } else {
+            vistaEspera.style.display = 'none';
+            vistaHistorial.style.display = 'block';
+            tabEspera.classList.remove('active');
+            tabHistorial.classList.add('active');
             cargarHistorial();
         }
-    });
+    };
 
+    tabEspera.addEventListener('click', () => cambiarPestaña('espera'));
+    tabHistorial.addEventListener('click', () => cambiarPestaña('historial'));
+    consultarBtn.addEventListener('click', consultarPacientes);
+
+    // --- 6. BOTÓN RESET (Cerrar Día) ---
+    if (btnReset) {
+        btnReset.addEventListener('click', () => {
+            Swal.fire({
+                title: '¿Cerrar el día?',
+                text: "Esto borrará TODOS los pacientes y el historial. No se puede deshacer.",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: 'Sí, borrar todo',
+                cancelButtonText: 'Cancelar'
+            }).then(async (result) => {
+                if (result.isConfirmed) {
+                    const res = await fetch('/api/reset', { method: 'DELETE' });
+                    const data = await res.json();
+                    if (data.success) {
+                        Swal.fire('¡Borrado!', 'Sistema reiniciado.', 'success');
+                        // Actualizamos la vista actual
+                        vistaEspera.style.display !== 'none' ? consultarPacientes() : cargarHistorial();
+                    }
+                }
+            });
+        });
+    }
+
+    // --- 7. INICIALIZACIÓN ---
+    consultarPacientes(); 
 });
